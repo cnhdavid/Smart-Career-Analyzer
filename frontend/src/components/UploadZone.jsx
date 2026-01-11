@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { Upload, FileText, AlertCircle, Loader2, Target, Sparkles, Lightbulb, BarChart3, Rocket } from 'lucide-react'
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8000'
+const API_URL = '/api'
 
 const SAMPLE_RESUME = `John Doe
 Software Engineer | 5 years of experience
