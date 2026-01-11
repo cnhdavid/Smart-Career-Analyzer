@@ -84,6 +84,15 @@ async def root():
     }
 
 
+@app.get("/test")
+async def test():
+    return {
+        "message": "Backend is reachable",
+        "status": "ok",
+        "api_key_configured": bool(os.getenv("OPENAI_API_KEY"))
+    }
+
+
 @app.post("/analyze-resume", response_model=AnalysisResponse)
 async def analyze_resume(file: Optional[UploadFile] = File(None), target_role: Optional[str] = None, job_description: Optional[str] = None):
     if not file:
