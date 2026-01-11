@@ -115,9 +115,7 @@ async def analyze_resume(file: Optional[UploadFile] = File(None), target_role: O
             raise HTTPException(status_code=400, detail="Could not extract meaningful text from PDF")
         
         print(f"[DEBUG] Calling AI analyzer with target_role: {target_role}, job_description: {'Yes' if job_description else 'No'}")
-        
-        if not os.getenv("OPENAI_API_KEY"):
-            raise HTTPException(status_code=500, detail="OpenAI API Key is not configured. Please set OPENAI_API_KEY environment variable.")
+        print(f"[DEBUG] API Key configured: {bool(os.getenv('OPENAI_API_KEY'))}")
         
         analysis = ai_analyzer.analyze(extracted_text, target_role=target_role, job_description=job_description)
         print(f"[DEBUG] Analysis complete, returning results")
@@ -150,9 +148,7 @@ async def analyze_text(request: AnalysisRequest):
     
     try:
         print(f"[DEBUG] Analyzing text resume with target_role: {request.target_role}, job_description: {'Yes' if request.job_description else 'No'}")
-        
-        if not os.getenv("OPENAI_API_KEY"):
-            raise HTTPException(status_code=500, detail="OpenAI API Key is not configured. Please set OPENAI_API_KEY environment variable.")
+        print(f"[DEBUG] API Key configured: {bool(os.getenv('OPENAI_API_KEY'))}")
         
         analysis = ai_analyzer.analyze(request.text_resume, target_role=request.target_role, job_description=request.job_description)
         print(f"[DEBUG] Analysis complete, returning results")
