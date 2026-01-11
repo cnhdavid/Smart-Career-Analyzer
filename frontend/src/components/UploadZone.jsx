@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Upload, FileText, AlertCircle, Loader2, Target, Sparkles } from 'lucide-react'
+import { Upload, FileText, AlertCircle, Loader2, Target, Sparkles, Lightbulb, BarChart3, Rocket } from 'lucide-react'
 import axios from 'axios'
 
 const API_URL = 'http://localhost:8000'
@@ -231,8 +231,9 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
           <Sparkles className="w-5 h-5 text-green-600" />
           <h3 className="text-lg font-semibold">Target Job Description (Optional)</h3>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          <strong>🎯 Paste the Job Description here for a tailored analysis</strong> - Get precise match scores and ATS optimization tips
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-2">
+          <Target className="w-4 h-4 text-green-600 flex-shrink-0" />
+          <span><strong>Paste the Job Description here for a tailored analysis</strong> - Get precise match scores and ATS optimization tips</span>
         </p>
         <textarea
           value={jobDescription}
@@ -241,8 +242,9 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
           className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-[120px] resize-y"
           disabled={isLoading}
         />
-        <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-          💡 When you provide a job description, the AI will act as a recruiter for that specific role and calculate your match score based on the exact requirements
+        <p className="text-xs text-gray-500 dark:text-gray-500 mt-2 flex items-start gap-2">
+          <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <span>When you provide a job description, the AI will act as a recruiter for that specific role and calculate your match score based on the exact requirements</span>
         </p>
       </div>
 
@@ -322,21 +324,33 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="card text-center">
-          <div className="text-3xl mb-2">🎯</div>
+          <div className="flex justify-center mb-3">
+            <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
+              <Target className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
+          </div>
           <h4 className="font-semibold mb-1">Universal Role Matching</h4>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             See how you match across ANY industry and role
           </p>
         </div>
         <div className="card text-center">
-          <div className="text-3xl mb-2">📊</div>
+          <div className="flex justify-center mb-3">
+            <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
+              <BarChart3 className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+            </div>
+          </div>
           <h4 className="font-semibold mb-1">Competency Analysis</h4>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Visual breakdown of your key competencies
           </p>
         </div>
         <div className="card text-center">
-          <div className="text-3xl mb-2">🚀</div>
+          <div className="flex justify-center mb-3">
+            <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
+              <Rocket className="w-8 h-8 text-green-600 dark:text-green-400" />
+            </div>
+          </div>
           <h4 className="font-semibold mb-1">Career Growth Path</h4>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Personalized recommendations for your next step

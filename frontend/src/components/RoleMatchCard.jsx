@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CheckCircle2, XCircle, ExternalLink, BookOpen, X } from 'lucide-react'
+import { CheckCircle2, AlertCircle, ExternalLink, BookOpen, X } from 'lucide-react'
 
 function RoleMatchCard({ role, score, skillGaps }) {
   const [selectedSkill, setSelectedSkill] = useState(null)
@@ -88,7 +88,7 @@ function RoleMatchCard({ role, score, skillGaps }) {
                 onClick={() => handleSkillClick(skill)}
                 className="w-full flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer group"
               >
-                <XCircle className="w-4 h-4 text-red-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
                 <span className="group-hover:underline">{skill}</span>
                 <BookOpen className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>

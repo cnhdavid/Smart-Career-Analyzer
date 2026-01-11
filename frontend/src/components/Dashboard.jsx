@@ -1,4 +1,4 @@
-import { RotateCcw, TrendingUp, Award, BookOpen, Target, Download, Sparkles, Briefcase, Zap, CheckCircle, AlertTriangle } from 'lucide-react'
+import { RotateCcw, TrendingUp, Award, BookOpen, Target, Download, Sparkles, Briefcase, Zap, CheckCircle, AlertTriangle, FileSearch } from 'lucide-react'
 import RadarChart from './RadarChart'
 import RoleMatchCard from './RoleMatchCard'
 import SkillsList from './SkillsList'
@@ -63,7 +63,7 @@ function Dashboard({ data, onReset }) {
         <div className="card bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800">
           <div className="flex items-start gap-3">
             <div className="bg-green-600 p-2 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-white" />
+              <FileSearch className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-semibold mb-3 text-green-900 dark:text-green-100">
@@ -73,18 +73,23 @@ function Dashboard({ data, onReset }) {
                 Applicant Tracking Systems (ATS) scan resumes before human eyes see them. Here's how to improve your resume's compatibility:
               </p>
               <div className="space-y-2">
-                {data.ats_feedback.map((tip, index) => (
-                  <div key={index} className="flex items-start gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-700">
-                    {tip.startsWith('⚠️') || tip.startsWith('📋') || tip.startsWith('📊') || tip.startsWith('🎯') ? (
-                      <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                    ) : (
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    )}
-                    <p className="text-gray-700 dark:text-gray-300 text-sm">
-                      {tip}
-                    </p>
-                  </div>
-                ))}
+                {data.ats_feedback.map((tip, index) => {
+                  const cleanTip = tip.replace(/^[⚠️📋📊🎯✅]+\s*/, '')
+                  const isWarning = tip.includes('⚠️') || tip.toLowerCase().includes('missing') || tip.toLowerCase().includes('should') || tip.toLowerCase().includes('consider')
+                  
+                  return (
+                    <div key={index} className="flex items-start gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-700">
+                      {isWarning ? (
+                        <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                      ) : (
+                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      )}
+                      <p className="text-gray-700 dark:text-gray-300 text-sm">
+                        {cleanTip}
+                      </p>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
