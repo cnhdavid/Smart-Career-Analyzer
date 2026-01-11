@@ -44,9 +44,6 @@ class AIAnalyzer:
         # No fixed roles - AI will dynamically determine roles based on CV
     
     def analyze(self, resume_text: str, target_role: Optional[str] = None, job_description: Optional[str] = None) -> Dict:
-        if "OPENAI_API_KEY" not in os.environ or not os.environ.get("OPENAI_API_KEY"):
-            raise ValueError("Missing API Key: OPENAI_API_KEY environment variable is not set. Please configure it in Vercel project settings.")
-        
         if self.mock_mode:
             return self._mock_analysis(resume_text, target_role, job_description)
         else:
