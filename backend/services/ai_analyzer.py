@@ -3,7 +3,6 @@ import re
 import json
 from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
-from openai import OpenAI
 
 
 class Recommendation(BaseModel):
@@ -36,6 +35,7 @@ class AIAnalyzer:
         else:
             self.mock_mode = False
             try:
+                from openai import OpenAI
                 self.client = OpenAI(api_key=self.api_key)
             except Exception as e:
                 print(f"ERROR: Failed to initialize OpenAI client: {str(e)}")

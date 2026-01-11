@@ -1,10 +1,11 @@
-from pypdf import PdfReader
-from pypdf.errors import PdfReadError
 from io import BytesIO
 
 
 class PDFParser:
     def extract_text(self, pdf_bytes: bytes) -> str:
+        from pypdf import PdfReader
+        from pypdf.errors import PdfReadError
+        
         try:
             if not pdf_bytes or len(pdf_bytes) == 0:
                 raise Exception("PDF file is empty or invalid")
