@@ -4,7 +4,7 @@
   "description": "Smart Career & Skill-Gap Analyzer - Full Stack Application",
   "scripts": {
     "build": "npm --prefix frontend install && npm --prefix frontend run build",
-    "start-backend": "cd backend && .\\venv\\Scripts\\python.exe main.py",
+    "start-backend": "cd backend && python main.py",
     "start-frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run start-backend\" \"npm run start-frontend\" --names \"BACKEND,FRONTEND\" --prefix-colors \"bgBlue.bold,bgMagenta.bold\""
   },
