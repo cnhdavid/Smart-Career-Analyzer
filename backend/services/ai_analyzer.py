@@ -259,8 +259,17 @@ Return ONLY a valid JSON object with this exact structure:
             return analysis
         
         except Exception as e:
-            print(f"AI analysis failed: {str(e)}, falling back to mock mode")
-            return self._mock_analysis(resume_text, target_role)
+            import traceback
+            error_details = {
+                "error_type": type(e).__name__,
+                "error_message": str(e),
+                "traceback": traceback.format_exc()
+            }
+            print(f"[AI ANALYSIS ERROR] Type: {error_details['error_type']}")
+            print(f"[AI ANALYSIS ERROR] Message: {error_details['error_message']}")
+            print(f"[AI ANALYSIS ERROR] Full traceback:\n{error_details['traceback']}")
+            print(f"[AI ANALYSIS] Falling back to mock mode")
+            return self._mock_analysis(resume_text, target_role, job_description)
     
     def _extract_skills_universal(self, text: str) -> List[str]:
         # Universal skills across all industries

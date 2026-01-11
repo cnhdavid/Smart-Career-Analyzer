@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { Upload, FileText, AlertCircle, Loader2, Target, Sparkles, Lightbulb, BarChart3, Rocket } from 'lucide-react'
 import axios from 'axios'
 
-const API_URL = '/api'
+const API_URL = ''
 
 const SAMPLE_RESUME = `John Doe
 Software Engineer | 5 years of experience
@@ -133,7 +133,7 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/api/analyze-resume`, formData, {
+      const response = await axios.post('/api/analyze-resume', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -152,7 +152,7 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
     setIsLoading(true)
 
     try {
-      const response = await axios.post(`${API_URL}/api/analyze-text`, {
+      const response = await axios.post('/api/analyze-text', {
         text_resume: SAMPLE_RESUME,
         target_role: targetRole || null,
         job_description: jobDescription || null
