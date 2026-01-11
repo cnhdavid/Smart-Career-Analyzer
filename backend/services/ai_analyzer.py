@@ -172,15 +172,21 @@ class AIAnalyzer:
         }
     
     def _ai_analysis(self, resume_text: str, target_role: Optional[str] = None, job_description: Optional[str] = None) -> Dict:
-        # Handle job description vs target role
-        if job_description:
-            target_instruction = f"The user is applying for a SPECIFIC JOB. Act as a Technical Recruiter for this role. Job Description: {job_description[:1000]}. Calculate match score based ONLY on requirements in this job description. Extract the role title and required skills from the job description."
-        elif target_role:
-            target_instruction = f"The user wants to target the role: {target_role}. Include this as one of the 3 suggested roles."
-        else:
-            target_instruction = "Suggest the 3 most logical career next steps for this candidate."
-        
-        prompt = f"""
+        try:
+            # Check API key first
+            if not self.api_key:
+                print("[AI ANALYSIS ERROR] No API key available")
+                raise ValueError("OpenAI API key is not configured. Please set OPENAI_API_KEY environment variable.")
+            
+            # Handle job description vs target role
+            if job_description:
+                target_instruction = f"The user is applying for a SPECIFIC JOB. Act as a Technical Recruiter for this role. Job Description: {job_description[:1000]}. Calculate match score based ONLY on requirements in this job description. Extract the role title and required skills from the job description."
+            elif target_role:
+                target_instruction = f"The user wants to target the role: {target_role}. Include this as one of the 3 suggested roles."
+            else:
+                target_instruction = "Suggest the 3 most logical career next steps for this candidate."
+            
+            prompt = f"""
 You are a Universal Career Consultant with expertise across ALL industries (Technology, Healthcare, Finance, Marketing, Sales, Operations, Education, Green Energy, Manufacturing, etc.).
 
 Analyze the following resume and extract:
@@ -219,44 +225,54 @@ Return ONLY a valid JSON object with this exact structure:
   "ats_feedback": ["Tip 1", "Tip 2", ...]
 }}
 """
-        
-        try:
-            response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a career analysis expert. Always respond with valid JSON only."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.3,
-                response_format={"type": "json_object"}
-            )
             
-            analysis = json.loads(response.choices[0].message.content)
+            try:
+                response = self.client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=[
+                        {"role": "system", "content": "You are a career analysis expert. Always respond with valid JSON only."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.3,
+                    response_format={"type": "json_object"}
+                )
+                
+                analysis = json.loads(response.choices[0].message.content)
+                
+                # Dynamic categories based on detected field
+                current_field = analysis.get("current_field", "General")
+                categories = self._get_field_categories(current_field)
+                user_scores = self._calculate_universal_scores(analysis["skills"], categories)
+                
+                analysis["radar_data"] = {
+                    "labels": categories,
+                    "datasets": [
+                        {
+                            "label": "Your Competencies",
+                            "data": user_scores
+                        },
+                        {
+                            "label": "Industry Standard",
+                            "data": [80, 75, 70, 75, 65]
+                        }
+                    ]
+                }
+                
+                for rec in analysis.get("recommendations", []):
+                    if "learning_tip" not in rec:
+                        rec["learning_tip"] = self._get_learning_tip(rec.get("skill", ""))
+                
+                return analysis
             
-            # Dynamic categories based on detected field
-            current_field = analysis.get("current_field", "General")
-            categories = self._get_field_categories(current_field)
-            user_scores = self._calculate_universal_scores(analysis["skills"], categories)
+            except json.JSONDecodeError as je:
+                print(f"[AI ANALYSIS ERROR] JSON parsing failed: {str(je)}")
+                print(f"[AI ANALYSIS ERROR] Response content: {response.choices[0].message.content if 'response' in locals() else 'No response'}")
+                raise ValueError(f"Failed to parse AI response as JSON: {str(je)}")
             
-            analysis["radar_data"] = {
-                "labels": categories,
-                "datasets": [
-                    {
-                        "label": "Your Competencies",
-                        "data": user_scores
-                    },
-                    {
-                        "label": "Industry Standard",
-                        "data": [80, 75, 70, 75, 65]
-                    }
-                ]
-            }
-            
-            for rec in analysis.get("recommendations", []):
-                if "learning_tip" not in rec:
-                    rec["learning_tip"] = self._get_learning_tip(rec.get("skill", ""))
-            
-            return analysis
+            except Exception as api_error:
+                print(f"[AI ANALYSIS ERROR] OpenAI API call failed: {type(api_error).__name__}")
+                print(f"[AI ANALYSIS ERROR] Error message: {str(api_error)}")
+                raise ValueError(f"OpenAI API error: {str(api_error)}")
         
         except Exception as e:
             import traceback
