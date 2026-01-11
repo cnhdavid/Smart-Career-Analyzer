@@ -14,29 +14,29 @@ function Dashboard({ data, onReset }) {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold mb-2">Your Career Analysis</h2>
-          <p className="text-gray-600 dark:text-gray-400">
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">Your Career Analysis</h2>
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
             {data.current_field && <span className="font-semibold text-primary-600">{data.current_field}</span>}
             {data.current_field && " • "}
             {data.skills.length} competencies detected • {data.experience_years} years experience
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={handleDownloadReport}
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary flex items-center justify-center gap-2 min-h-[44px]"
           >
             <Download className="w-4 h-4" />
-            Download Report
+            <span className="text-sm md:text-base">Download Report</span>
           </button>
           <button
             onClick={onReset}
-            className="btn-secondary flex items-center gap-2"
+            className="btn-secondary flex items-center justify-center gap-2 min-h-[44px]"
           >
             <RotateCcw className="w-4 h-4" />
-            Analyze Another
+            <span className="text-sm md:text-base">Analyze Another</span>
           </button>
         </div>
       </div>
@@ -48,10 +48,10 @@ function Dashboard({ data, onReset }) {
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold mb-2 text-primary-900 dark:text-primary-100">
+              <h3 className="text-base md:text-lg font-semibold mb-2 text-primary-900 dark:text-primary-100">
                 Professional Summary
               </h3>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+              <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 leading-relaxed">
                 {data.summary}
               </p>
             </div>
@@ -66,7 +66,7 @@ function Dashboard({ data, onReset }) {
               <FileSearch className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold mb-3 text-green-900 dark:text-green-100">
+              <h3 className="text-base md:text-lg font-semibold mb-3 text-green-900 dark:text-green-100">
                 ATS Optimization Tips
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -100,7 +100,7 @@ function Dashboard({ data, onReset }) {
         <div className="lg:col-span-2 card">
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5 text-primary-600" />
-            <h3 className="text-xl font-semibold">Key Competencies Comparison</h3>
+            <h3 className="text-lg md:text-xl font-semibold">Key Competencies Comparison</h3>
           </div>
           <RadarChart data={data.radar_data} />
         </div>
@@ -109,23 +109,23 @@ function Dashboard({ data, onReset }) {
           <div className="card bg-gradient-to-br from-primary-600 to-purple-600 text-white">
             <div className="flex items-center gap-2 mb-2">
               <Award className="w-5 h-5" />
-              <h3 className="text-lg font-semibold">Best Match</h3>
+              <h3 className="text-base md:text-lg font-semibold">Best Match</h3>
             </div>
-            <p className="text-3xl font-bold mb-1">{topRole[0]}</p>
-            <p className="text-xl opacity-90">{topRole[1]}% Match</p>
+            <p className="text-2xl md:text-3xl font-bold mb-1">{topRole[0]}</p>
+            <p className="text-lg md:text-xl opacity-90">{topRole[1]}% Match</p>
           </div>
 
           <div className="card">
             <div className="flex items-center gap-2 mb-3">
               <Briefcase className="w-5 h-5 text-primary-600" />
-              <h3 className="text-lg font-semibold">Your Competencies</h3>
+              <h3 className="text-base md:text-lg font-semibold">Your Competencies</h3>
             </div>
             <SkillsList skills={data.skills} />
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Object.entries(data.role_matches).map(([role, score]) => (
           <RoleMatchCard
             key={role}
@@ -140,9 +140,9 @@ function Dashboard({ data, onReset }) {
         <div className="card bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
           <div className="flex items-center gap-2 mb-4">
             <Zap className="w-5 h-5 text-purple-600" />
-            <h3 className="text-xl font-semibold">Trending Industries for Your Profile</h3>
+            <h3 className="text-lg md:text-xl font-semibold">Trending Industries for Your Profile</h3>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 mb-3">
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-3">
             Based on your skill set, these sectors are actively seeking professionals like you:
           </p>
           <div className="flex flex-wrap gap-2">
@@ -161,7 +161,7 @@ function Dashboard({ data, onReset }) {
       <div className="card">
         <div className="flex items-center gap-2 mb-4">
           <BookOpen className="w-5 h-5 text-primary-600" />
-          <h3 className="text-xl font-semibold">Recommended Learning Path</h3>
+          <h3 className="text-lg md:text-xl font-semibold">Recommended Learning Path</h3>
         </div>
         <Roadmap recommendations={data.recommendations} />
       </div>

@@ -179,12 +179,12 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto mt-12">
-      <div className="text-center mb-8">
-        <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
+    <div className="max-w-3xl mx-auto mt-6 md:mt-12">
+      <div className="text-center mb-6 md:mb-8">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent px-4">
           Discover Your Career Potential
         </h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
+        <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 px-4">
           Upload your resume and get AI-powered insights on your skills and career readiness
         </p>
       </div>
@@ -192,7 +192,7 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
       <div className="card mb-6">
         <div className="flex items-center gap-2 mb-3">
           <Target className="w-5 h-5 text-primary-600" />
-          <h3 className="text-lg font-semibold">Target Dream Job (Optional)</h3>
+          <h3 className="text-base md:text-lg font-semibold">Target Dream Job (Optional)</h3>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
           Specify your dream role to get personalized skill gap analysis
@@ -207,7 +207,7 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
             }}
             onFocus={() => setShowRoleDropdown(true)}
             placeholder="e.g., Marketing Manager, Financial Analyst, Software Engineer..."
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm md:text-base min-h-[44px]"
             disabled={isLoading}
           />
           {showRoleDropdown && filteredRoles.length > 0 && (
@@ -229,7 +229,7 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
       <div className="card mb-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-5 h-5 text-green-600" />
-          <h3 className="text-lg font-semibold">Target Job Description (Optional)</h3>
+          <h3 className="text-base md:text-lg font-semibold">Target Job Description (Optional)</h3>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-2">
           <Target className="w-4 h-4 text-green-600 flex-shrink-0" />
@@ -239,7 +239,7 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
           value={jobDescription}
           onChange={(e) => setJobDescription(e.target.value)}
           placeholder="Paste the full job description here...&#10;&#10;Example:&#10;Senior Software Engineer&#10;Requirements:&#10;- 5+ years of experience with Python and JavaScript&#10;- Strong knowledge of React, Node.js, and AWS&#10;- Experience with CI/CD pipelines..."
-          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-[120px] resize-y"
+          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-[120px] resize-y text-sm md:text-base"
           disabled={isLoading}
         />
         <p className="text-xs text-gray-500 dark:text-gray-500 mt-2 flex items-start gap-2">
@@ -280,35 +280,35 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
             )}
           </div>
         ) : (
-          <div className="text-center py-16">
-            <div className="bg-primary-100 dark:bg-primary-900/30 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Upload className="w-10 h-10 text-primary-600 dark:text-primary-400" />
+          <div className="text-center py-12 md:py-16 px-4">
+            <div className="bg-primary-100 dark:bg-primary-900/30 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Upload className="w-8 h-8 md:w-10 md:h-10 text-primary-600 dark:text-primary-400" />
             </div>
             
-            <h3 className="text-xl font-semibold mb-2">Upload Your Resume</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <h3 className="text-lg md:text-xl font-semibold mb-2">Upload Your Resume</h3>
+            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-6">
               Drag and drop your PDF resume here, or click to browse
             </p>
             
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={onButtonClick}
-                className="btn-primary"
+                className="btn-primary min-h-[44px] flex items-center justify-center"
               >
                 <FileText className="w-5 h-5 inline mr-2" />
-                Choose File
+                <span className="text-sm md:text-base">Choose File</span>
               </button>
               
               <button
                 onClick={handleSampleResume}
-                className="btn-secondary flex items-center gap-2"
+                className="btn-secondary flex items-center justify-center gap-2 min-h-[44px]"
               >
                 <Sparkles className="w-5 h-5" />
-                Try Sample Resume
+                <span className="text-sm md:text-base">Try Sample Resume</span>
               </button>
             </div>
             
-            <p className="text-sm text-gray-500 dark:text-gray-500 mt-4">
+            <p className="text-xs md:text-sm text-gray-500 dark:text-gray-500 mt-4">
               Supported format: PDF (Max 10MB) • Or try our sample resume
             </p>
           </div>
@@ -322,37 +322,37 @@ function UploadZone({ onAnalysisComplete, isLoading, setIsLoading }) {
         )}
       </div>
 
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div className="card text-center">
           <div className="flex justify-center mb-3">
             <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
-              <Target className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              <Target className="w-6 h-6 md:w-8 md:h-8 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
-          <h4 className="font-semibold mb-1">Universal Role Matching</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <h4 className="text-sm md:text-base font-semibold mb-1">Universal Role Matching</h4>
+          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
             See how you match across ANY industry and role
           </p>
         </div>
         <div className="card text-center">
           <div className="flex justify-center mb-3">
             <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
-              <BarChart3 className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+              <BarChart3 className="w-6 h-6 md:w-8 md:h-8 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
-          <h4 className="font-semibold mb-1">Competency Analysis</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <h4 className="text-sm md:text-base font-semibold mb-1">Competency Analysis</h4>
+          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
             Visual breakdown of your key competencies
           </p>
         </div>
-        <div className="card text-center">
+        <div className="card text-center sm:col-span-2 md:col-span-1">
           <div className="flex justify-center mb-3">
             <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
-              <Rocket className="w-8 h-8 text-green-600 dark:text-green-400" />
+              <Rocket className="w-6 h-6 md:w-8 md:h-8 text-green-600 dark:text-green-400" />
             </div>
           </div>
-          <h4 className="font-semibold mb-1">Career Growth Path</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <h4 className="text-sm md:text-base font-semibold mb-1">Career Growth Path</h4>
+          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
             Personalized recommendations for your next step
           </p>
         </div>

@@ -8,19 +8,20 @@ function RadarChart({ data }) {
   }))
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <RechartsRadar data={chartData}>
-        <PolarGrid stroke="#374151" className="dark:stroke-gray-600" />
-        <PolarAngleAxis 
-          dataKey="category" 
-          tick={{ fill: '#6B7280', fontSize: 12 }}
-          className="dark:fill-gray-400"
-        />
-        <PolarRadiusAxis 
-          angle={90} 
-          domain={[0, 100]}
-          tick={{ fill: '#6B7280', fontSize: 10 }}
-        />
+    <div className="w-full" style={{ minHeight: '300px' }}>
+      <ResponsiveContainer width="100%" height={400} minHeight={300}>
+        <RechartsRadar data={chartData}>
+          <PolarGrid stroke="#374151" className="dark:stroke-gray-600" />
+          <PolarAngleAxis 
+            dataKey="category" 
+            tick={{ fill: '#6B7280', fontSize: 11 }}
+            className="dark:fill-gray-400"
+          />
+          <PolarRadiusAxis 
+            angle={90} 
+            domain={[0, 100]}
+            tick={{ fill: '#6B7280', fontSize: 9 }}
+          />
         <Radar
           name="Your Skills"
           dataKey="yourSkills"
@@ -36,11 +37,12 @@ function RadarChart({ data }) {
           fillOpacity={0.3}
         />
         <Legend 
-          wrapperStyle={{ paddingTop: '20px' }}
+          wrapperStyle={{ paddingTop: '20px', fontSize: '14px' }}
           iconType="circle"
         />
       </RechartsRadar>
     </ResponsiveContainer>
+    </div>
   )
 }
 
