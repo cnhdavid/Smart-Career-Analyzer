@@ -1,9 +1,12 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Union
-import os
 import traceback
 from dotenv import load_dotenv
 import uvicorn
