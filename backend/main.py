@@ -77,7 +77,7 @@ class AnalysisResponse(BaseModel):
     ats_feedback: List[str]
 
 
-@app.get("/")
+@app.get("/api")
 async def root():
     return {
         "status": "online",
@@ -87,7 +87,7 @@ async def root():
     }
 
 
-@app.get("/test")
+@app.get("/api/test")
 async def test():
     return {
         "message": "Backend is reachable",
@@ -96,7 +96,7 @@ async def test():
     }
 
 
-@app.post("/analyze-resume", response_model=AnalysisResponse)
+@app.post("/api/analyze-resume", response_model=AnalysisResponse)
 async def analyze_resume(file: Optional[UploadFile] = File(None), target_role: Optional[str] = None, job_description: Optional[str] = None):
     if not file:
         raise HTTPException(status_code=400, detail="No file provided")
@@ -144,7 +144,7 @@ async def analyze_resume(file: Optional[UploadFile] = File(None), target_role: O
         )
 
 
-@app.post("/analyze-text", response_model=AnalysisResponse)
+@app.post("/api/analyze-text", response_model=AnalysisResponse)
 async def analyze_text(request: AnalysisRequest):
     if not request.text_resume or len(request.text_resume.strip()) < 50:
         raise HTTPException(status_code=400, detail="Resume text is too short or empty")
@@ -175,7 +175,7 @@ async def analyze_text(request: AnalysisRequest):
         )
 
 
-@app.get("/health")
+@app.get("/api/health")
 async def health_check():
     return {
         "status": "ok",
