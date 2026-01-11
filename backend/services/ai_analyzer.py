@@ -1,11 +1,9 @@
 import os
 import re
-from typing import Dict, List, Optional
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import PromptTemplate
-from langchain_core.output_parsers import JsonOutputParser
-from pydantic import BaseModel, Field
 import json
+from typing import Dict, List, Optional
+from pydantic import BaseModel, Field
+from openai import OpenAI
 
 
 class Recommendation(BaseModel):
@@ -38,11 +36,7 @@ class AIAnalyzer:
         else:
             self.mock_mode = False
             try:
-                self.llm = ChatOpenAI(
-                    temperature=0.3,
-                    model_name="gpt-3.5-turbo",
-                    openai_api_key=self.api_key
-                )
+                self.client = OpenAI(api_key=self.api_key)
             except Exception as e:
                 print(f"ERROR: Failed to initialize OpenAI client: {str(e)}")
                 self.mock_mode = True
@@ -178,8 +172,6 @@ class AIAnalyzer:
         }
     
     def _ai_analysis(self, resume_text: str, target_role: Optional[str] = None, job_description: Optional[str] = None) -> Dict:
-        parser = JsonOutputParser(pydantic_object=ResumeAnalysis)
-        
         # Handle job description vs target role
         if job_description:
             target_instruction = f"The user is applying for a SPECIFIC JOB. Act as a Technical Recruiter for this role. Job Description: {job_description[:1000]}. Calculate match score based ONLY on requirements in this job description. Extract the role title and required skills from the job description."
@@ -188,46 +180,58 @@ class AIAnalyzer:
         else:
             target_instruction = "Suggest the 3 most logical career next steps for this candidate."
         
-        analysis_prompt = PromptTemplate(
-            input_variables=["resume_text", "target_instruction"],
-            template="""
-            You are a Universal Career Consultant with expertise across ALL industries (Technology, Healthcare, Finance, Marketing, Sales, Operations, Education, Green Energy, Manufacturing, etc.).
-            
-            Analyze the following resume and extract:
-            1. List of key competencies and skills (technical, soft skills, domain knowledge, certifications, tools, languages)
-            2. Years of professional experience (estimate if not explicit)
-            3. The candidate's current professional field/industry (e.g., "Software Development", "Healthcare Administration", "Digital Marketing", "Financial Services")
-            4. {target_instruction}
-            5. For each of the 3 suggested roles, calculate a match percentage (0-100) based on the candidate's skills and experience
-            6. For each role, identify 3-5 key skill gaps that would help the candidate transition or advance
-            7. Top 3 learning recommendations with priority (High/Medium/Low), resource name, timeframe, and a one-sentence learning tip
-            8. List 3-5 trending industries that currently match the candidate's skill set (e.g., "Healthcare Tech", "Renewable Energy", "FinTech", "E-commerce")
-            9. A 2-sentence professional summary/verdict of the candidate's profile
-            10. ATS Optimization Feedback: List 3-5 specific tips to improve ATS compatibility (check for: complex formatting, missing contact info, lack of standard section headings like "Experience" or "Skills", missing keywords, tables/graphics, unusual fonts, lack of quantifiable achievements)
-            
-            Resume:
-            {resume_text}
-            
-            {format_instructions}
-            
-            IMPORTANT: 
-            - Suggest roles across ANY industry, not just tech (e.g., Marketing Manager, Sales Director, Operations Lead, Healthcare Administrator, Financial Analyst)
-            - Be creative and consider lateral moves, promotions, and industry transitions
-            - Ensure the 3 roles are diverse and represent realistic career paths
-            - Match percentages should reflect genuine fit based on transferable skills
-            
-            Return ONLY a valid JSON object with the exact structure specified above.
-            """,
-            partial_variables={"format_instructions": parser.get_format_instructions()}
-        )
-        
-        chain = analysis_prompt | self.llm | parser
+        prompt = f"""
+You are a Universal Career Consultant with expertise across ALL industries (Technology, Healthcare, Finance, Marketing, Sales, Operations, Education, Green Energy, Manufacturing, etc.).
+
+Analyze the following resume and extract:
+1. List of key competencies and skills (technical, soft skills, domain knowledge, certifications, tools, languages)
+2. Years of professional experience (estimate if not explicit)
+3. The candidate's current professional field/industry (e.g., "Software Development", "Healthcare Administration", "Digital Marketing", "Financial Services")
+4. {target_instruction}
+5. For each of the 3 suggested roles, calculate a match percentage (0-100) based on the candidate's skills and experience
+6. For each role, identify 3-5 key skill gaps that would help the candidate transition or advance
+7. Top 3 learning recommendations with priority (High/Medium/Low), resource name, timeframe, and a one-sentence learning tip
+8. List 3-5 trending industries that currently match the candidate's skill set (e.g., "Healthcare Tech", "Renewable Energy", "FinTech", "E-commerce")
+9. A 2-sentence professional summary/verdict of the candidate's profile
+10. ATS Optimization Feedback: List 3-5 specific tips to improve ATS compatibility (check for: complex formatting, missing contact info, lack of standard section headings like "Experience" or "Skills", missing keywords, tables/graphics, unusual fonts, lack of quantifiable achievements)
+
+Resume:
+{resume_text[:3000]}
+
+IMPORTANT: 
+- Suggest roles across ANY industry, not just tech (e.g., Marketing Manager, Sales Director, Operations Lead, Healthcare Administrator, Financial Analyst)
+- Be creative and consider lateral moves, promotions, and industry transitions
+- Ensure the 3 roles are diverse and represent realistic career paths
+- Match percentages should reflect genuine fit based on transferable skills
+
+Return ONLY a valid JSON object with this exact structure:
+{{
+  "skills": ["skill1", "skill2", ...],
+  "experience_years": 5.0,
+  "current_field": "Field Name",
+  "role_matches": {{"Role 1": 85.0, "Role 2": 75.0, "Role 3": 65.0}},
+  "skill_gaps": {{"Role 1": ["skill1", "skill2"], "Role 2": [...], "Role 3": [...]}},
+  "recommendations": [
+    {{"skill": "Skill Name", "priority": "High", "resource": "Resource Name", "timeframe": "1-2 months", "learning_tip": "Tip here"}}
+  ],
+  "trending_industries": ["Industry 1", "Industry 2", ...],
+  "summary": "Two sentence summary here.",
+  "ats_feedback": ["Tip 1", "Tip 2", ...]
+}}
+"""
         
         try:
-            analysis = chain.invoke({
-                "resume_text": resume_text[:3000],
-                "target_instruction": target_instruction
-            })
+            response = self.client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a career analysis expert. Always respond with valid JSON only."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,
+                response_format={"type": "json_object"}
+            )
+            
+            analysis = json.loads(response.choices[0].message.content)
             
             # Dynamic categories based on detected field
             current_field = analysis.get("current_field", "General")

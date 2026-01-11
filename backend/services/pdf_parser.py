@@ -1,4 +1,5 @@
-import fitz
+from pypdf import PdfReader
+from pypdf.errors import PdfReadError
 from io import BytesIO
 
 
@@ -9,26 +10,38 @@ class PDFParser:
                 raise Exception("PDF file is empty or invalid")
             
             pdf_stream = BytesIO(pdf_bytes)
-            doc = fitz.open(stream=pdf_stream, filetype="pdf")
             
-            if doc.page_count == 0:
-                doc.close()
+            try:
+                reader = PdfReader(pdf_stream)
+            except PdfReadError as e:
+                raise Exception("PDF file is corrupted or in an unsupported format")
+            except Exception as e:
+                if "encrypt" in str(e).lower() or "password" in str(e).lower():
+                    raise Exception("PDF is password-protected. Please upload an unencrypted PDF")
+                raise Exception(f"Unable to read PDF: {str(e)}")
+            
+            if len(reader.pages) == 0:
                 raise Exception("PDF has no pages")
             
-            text = ""
-            for page in doc:
-                page_text = page.get_text()
-                if page_text:
-                    text += page_text + "\n"
+            if reader.is_encrypted:
+                raise Exception("PDF is password-protected. Please upload an unencrypted PDF")
             
-            doc.close()
+            text = ""
+            for page in reader.pages:
+                try:
+                    page_text = page.extract_text()
+                    if page_text:
+                        text += page_text + "\n"
+                except Exception as e:
+                    continue
             
             if not text or len(text.strip()) == 0:
-                raise Exception("Could not extract any text from PDF. The PDF might be image-based or encrypted.")
+                raise Exception("Could not extract any text from PDF. The PDF might be image-based or scanned. Please upload a text-based PDF")
             
             return text.strip()
         
         except Exception as e:
-            if "PDF" in str(e) or "extract" in str(e).lower():
-                raise Exception(str(e))
-            raise Exception(f"Could not read PDF text: {str(e)}")
+            error_msg = str(e)
+            if "PDF" in error_msg or "extract" in error_msg.lower() or "password" in error_msg.lower() or "encrypt" in error_msg.lower():
+                raise Exception(error_msg)
+            raise Exception(f"Could not read PDF: {error_msg}")
