@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from fastapi import FastAPI, File, UploadFile, HTTPException, Request
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -97,7 +97,11 @@ async def test():
 
 
 @app.post("/api/analyze-resume", response_model=AnalysisResponse)
-async def analyze_resume(file: Optional[UploadFile] = File(None), target_role: Optional[str] = None, job_description: Optional[str] = None):
+async def analyze_resume(
+    file: UploadFile = File(...),
+    target_role: Optional[str] = Form(None),
+    job_description: Optional[str] = Form(None)
+):
     if not file:
         raise HTTPException(status_code=400, detail="No file provided")
     
